@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookWave — Projet BTS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark:        #0f0a06;
+            --dark-mid:    #1a110a;
+            --brown:       #2d1a0e;
+            --amber:       #c8813a;
+            --amber-light: #e8a55a;
+            --amber-soft:  #fdf3e7;
+            --cream:       #f5ede0;
+            --grey-400:    #9a8878;
+            --grey-700:    #4a3828;
+            --white:       #ffffff;
+            --font-d: 'Playfair Display', serif;
+            --font-b: 'DM Sans', sans-serif;
+            --radius: 14px; --radius-lg: 22px;
+        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: var(--font-b); background: var(--cream); color: var(--dark); overflow-x: hidden; }
+
+        /* NAVBAR */
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 48px; height: 62px;
+            background: rgba(245,237,224,0.92); backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(200,129,58,0.15);
+        }
+        .navbar-brand { font-family: var(--font-d); font-weight: 800; font-size: 1.2rem; color: var(--dark); text-decoration: none; }
+        .navbar-brand span { color: var(--amber); }
+        .navbar-back { display: inline-flex; align-items: center; gap: 7px; font-size: .84rem; font-weight: 500; color: var(--grey-700); text-decoration: none; transition: color .2s; }
+        .navbar-back:hover { color: var(--amber); }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--dark) 0%, var(--dark-mid) 40%, #2a1508 100%);
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; padding: 100px 24px 80px;
+            position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(ellipse 60% 50% at 25% 40%, rgba(200,129,58,0.2) 0%, transparent 70%),
+                        radial-gradient(ellipse 40% 60% at 75% 60%, rgba(232,165,90,0.12) 0%, transparent 70%);
+        }
+        .hero::after {
+            content: ''; position: absolute; inset: 0;
+            background-image: radial-gradient(rgba(200,129,58,0.06) 1px, transparent 1px);
+            background-size: 32px 32px;
+        }
+        .hero-content { position: relative; z-index: 1; }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(200,129,58,0.12); border: 1px solid rgba(200,129,58,0.25);
+            border-radius: 50px; padding: 6px 18px; margin-bottom: 28px;
+            font-size: .76rem; font-weight: 500; color: var(--amber-light);
+            letter-spacing: .1em; text-transform: uppercase;
+        }
+        .hero-badge-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--amber); animation: blink 2s infinite; }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+        .hero h1 { font-family: var(--font-d); font-weight: 800; font-size: clamp(3rem, 7vw, 5.5rem); line-height: 1; letter-spacing: -.02em; color: var(--white); margin-bottom: 8px; }
+        .hero h1 span { color: var(--amber); }
+        .hero-subtitle { font-family: var(--font-d); font-style: italic; font-size: clamp(1rem, 2vw, 1.3rem); color: rgba(255,255,255,0.35); margin-bottom: 24px; }
+        .hero-desc { font-size: 1rem; color: rgba(255,255,255,0.5); max-width: 480px; margin: 0 auto 36px; line-height: 1.7; font-weight: 300; }
+        .hero-tags { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+        .tag { background: rgba(200,129,58,0.1); border: 1px solid rgba(200,129,58,0.2); border-radius: 8px; padding: 6px 14px; font-size: .76rem; font-weight: 500; color: rgba(255,255,255,0.6); }
+        .hero-scroll { position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; align-items: center; gap: 6px; color: rgba(255,255,255,0.25); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; }
+        .scroll-line { width: 1px; height: 40px; background: linear-gradient(to bottom, rgba(200,129,58,0.5), transparent); animation: scrollDown 2s ease infinite; }
+        @keyframes scrollDown { 0%{transform:scaleY(0);transform-origin:top} 50%{transform:scaleY(1);transform-origin:top} 51%{transform-origin:bottom} 100%{transform:scaleY(0);transform-origin:bottom} }
+
+        /* SECTIONS */
+        .section { padding: 96px 24px; }
+        .section-dark { background: var(--dark-mid); }
+        .section-warm { background: var(--amber-soft); }
+        .container { max-width: 1060px; margin: 0 auto; }
+        .section-label { font-size: .7rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--amber); margin-bottom: 12px; }
+        .section-title { font-family: var(--font-d); font-weight: 800; font-size: clamp(1.8rem, 3.5vw, 2.6rem); letter-spacing: -.02em; color: var(--dark); margin-bottom: 16px; line-height: 1.1; }
+        .section-title-light { color: var(--white); }
+        .section-sub { color: var(--grey-400); font-size: .97rem; line-height: 1.7; max-width: 540px; font-weight: 300; }
+        .section-sub-light { color: rgba(255,255,255,0.4); }
+
+        /* CONTEXTE */
+        .contexte-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; margin-top: 56px; }
+        .contexte-text p { color: var(--grey-700); line-height: 1.8; font-size: .97rem; margin-bottom: 16px; font-weight: 300; }
+        .contexte-text p strong { color: var(--dark); font-weight: 600; }
+        .contexte-card { background: linear-gradient(135deg, var(--dark) 0%, var(--brown) 100%); border-radius: var(--radius-lg); padding: 36px; border: 1px solid rgba(200,129,58,0.2); }
+        .contexte-card h3 { font-family: var(--font-d); font-weight: 700; font-size: 1.05rem; margin-bottom: 20px; color: var(--amber-light); }
+        .team-info { display: flex; gap: 16px; }
+        .team-box { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 14px; text-align: center; }
+        .team-box .val { font-family: var(--font-d); font-weight: 700; font-size: 1.6rem; color: var(--white); }
+        .team-box .lbl { font-size: .7rem; color: rgba(255,255,255,0.4); margin-top: 3px; }
+        .ma-partie { background: rgba(200,129,58,0.1); border: 1px solid rgba(200,129,58,0.25); border-radius: var(--radius); padding: 16px 18px; margin-top: 16px; }
+        .ma-partie h4 { font-size: .78rem; font-weight: 600; color: var(--amber); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 8px; }
+        .ma-partie p { color: rgba(255,255,255,0.55); font-size: .84rem; line-height: 1.6; font-weight: 300; }
+
+        /* SCREENSHOTS */
+        .screenshot-main { border-radius: var(--radius-lg); overflow: hidden; box-shadow: 0 24px 80px rgba(15,10,6,0.4); margin-bottom: 12px; border: 1px solid rgba(200,129,58,0.1); }
+        .screenshot-main img { width: 100%; display: block; }
+        .screenshot-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 20px; }
+        .screenshot-thumb { border-radius: var(--radius); overflow: hidden; box-shadow: 0 8px 30px rgba(15,10,6,0.25); border: 1px solid rgba(200,129,58,0.1); transition: transform .3s, box-shadow .3s; }
+        .screenshot-thumb:hover { transform: translateY(-4px); box-shadow: 0 16px 50px rgba(15,10,6,0.35); }
+        .screenshot-thumb img { width: 100%; display: block; }
+        .screenshot-label { font-size: .71rem; font-weight: 600; color: rgba(255,255,255,0.35); margin-top: 7px; letter-spacing: .06em; text-transform: uppercase; }
+
+        /* FEATURES */
+        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 56px; }
+        .feature-card { background: var(--white); border: 1px solid rgba(200,129,58,0.12); border-radius: var(--radius-lg); padding: 28px; transition: transform .3s, box-shadow .3s; }
+        .feature-card:hover { transform: translateY(-5px); box-shadow: 0 20px 60px rgba(200,129,58,0.12); }
+        .feature-icon { width: 44px; height: 44px; border-radius: 12px; background: rgba(200,129,58,0.1); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 16px; }
+        .feature-card h3 { font-family: var(--font-d); font-weight: 700; font-size: .95rem; color: var(--dark); margin-bottom: 10px; }
+        .feature-card p { font-size: .83rem; color: var(--grey-400); line-height: 1.65; font-weight: 300; }
+
+        /* STACK */
+        .stack-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 56px; }
+        .stack-card { background: var(--white); border: 1px solid rgba(200,129,58,0.15); border-radius: var(--radius); padding: 24px; text-align: center; transition: transform .3s, box-shadow .3s; }
+        .stack-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(200,129,58,0.15); }
+        .stack-emoji { font-size: 2rem; margin-bottom: 12px; display: block; }
+        .stack-name { font-family: var(--font-d); font-weight: 700; font-size: .9rem; color: var(--dark); margin-bottom: 6px; }
+        .stack-role { font-size: .74rem; color: var(--grey-400); line-height: 1.5; font-weight: 300; }
+
+        /* FOOTER */
+        .page-footer { background: var(--dark); padding: 48px 24px; text-align: center; border-top: 1px solid rgba(200,129,58,0.1); }
+        .page-footer p { color: rgba(255,255,255,0.3); font-size: .84rem; }
+        .page-footer a { color: var(--amber); text-decoration: none; font-weight: 500; transition: color .2s; }
+        .page-footer a:hover { color: var(--amber-light); }
+
+        /* ANIMATIONS */
+        .fade-up { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+        @media (max-width: 768px) {
+            .navbar { padding: 0 20px; }
+            .contexte-grid, .features-grid { grid-template-columns: 1fr; }
+            .stack-grid { grid-template-columns: repeat(2, 1fr); }
+            .screenshot-grid { grid-template-columns: 1fr; }
+            .team-info { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar">
+    <a href="index.html" class="navbar-brand">Book<span>Wave</span></a>
+    <a href="index.html" class="navbar-back">← Retour au portfolio</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-content">
+        <div class="hero-badge"><div class="hero-badge-dot"></div>Projet BTS SIO SLAM — 2024</div>
+        <h1>Book<span>Wave</span></h1>
+        <p class="hero-subtitle">Bibliothèque E-Pub collaborative</p>
+        <p class="hero-desc">Application web de gestion et lecture de livres numériques au format ePub, développée en équipe dans le cadre du BTS SIO option SLAM.</p>
+        <div class="hero-tags">
+            <span class="tag">PHP</span>
+            <span class="tag">HTML / CSS</span>
+            <span class="tag">JavaScript</span>
+            <span class="tag">MySQL</span>
+        </div>
+    </div>
+    <div class="hero-scroll"><div class="scroll-line"></div>Scroll</div>
+</section>
+
+<!-- CONTEXTE -->
+<section class="section">
+    <div class="container">
+        <div class="fade-up">
+            <div class="section-label">Contexte du projet</div>
+            <h2 class="section-title">Un projet de groupe,<br>une bibliothèque numérique</h2>
+            <p class="section-sub">Réalisé en équipe dans le cadre du BTS SIO option SLAM au Lycée Saint-Rémi d'Amiens.</p>
+        </div>
+        <div class="contexte-grid">
+            <div class="contexte-text fade-up">
+                <p>BookWave est une <strong>application web de bibliothèque numérique</strong> permettant aux utilisateurs de gérer, lire et partager des livres au format ePub.</p>
+                <p>Le projet couvre l'ensemble des fonctionnalités d'une plateforme de lecture : <strong>gestion des utilisateurs</strong>, catalogue de livres, lecteur ePub intégré, système de forum communautaire et gestion des métadonnées.</p>
+                <p>Chaque membre de l'équipe avait sa partie dédiée, travaillant en parallèle sur les différentes fonctionnalités de l'application.</p>
+            </div>
+            <div class="contexte-card fade-up">
+                <h3>📚 Le projet en chiffres</h3>
+                <div class="team-info">
+                    <div class="team-box"><div class="val">BTS</div><div class="lbl">Niveau scolaire</div></div>
+                    <div class="team-box"><div class="val">2024</div><div class="lbl">Année de réalisation</div></div>
+                </div>
+                <div class="ma-partie">
+                    <h4>✏️ Ma contribution</h4>
+                    <p>Modification des métadonnées des ePubs — gestion et édition des informations associées aux livres numériques : titre, auteur, genres, éditeur.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SCREENSHOTS -->
+<section class="section section-dark">
+    <div class="container">
+        <div class="fade-up">
+            <div class="section-label">Aperçu de l'application</div>
+            <h2 class="section-title section-title-light">L'interface en images</h2>
+            <p class="section-sub section-sub-light">Découvrez les différentes pages et fonctionnalités de BookWave.</p>
+        </div>
+        <div class="fade-up" style="margin-top:56px">
+            <div class="screenshot-main">
+                <img src="assets/imgs/Accueil.PNG" alt="Page d'accueil BookWave">
+            </div>
+            <p class="screenshot-label" style="text-align:center;margin-bottom:24px">Page d'accueil</p>
+            <div class="screenshot-grid">
+                <div>
+                    <div class="screenshot-thumb"><img src="assets/imgs/connexion.png" alt="Connexion"></div>
+                    <p class="screenshot-label">Connexion</p>
+                </div>
+                <div>
+                    <div class="screenshot-thumb"><img src="assets/imgs/connecté.png" alt="Une fois connecté"></div>
+                    <p class="screenshot-label">Interface connectée</p>
+                </div>
+                <div>
+                    <div class="screenshot-thumb"><img src="assets/imgs/Edit.PNG" alt="Modification métadonnées"></div>
+                    <p class="screenshot-label" style="color:var(--amber)">✏️ Modification des métadonnées — ma partie</p>
+                </div>
+                <div>
+                    <div class="screenshot-thumb"><img src="assets/imgs/booky.PNG" alt="Lecteur ePub"></div>
+                    <p class="screenshot-label">Lecteur ePub intégré</p>
+                </div>
+                <div>
+                    <div class="screenshot-thumb"><img src="assets/imgs/create.PNG" alt="Créer un livre"></div>
+                    <p class="screenshot-label">Création d'un livre</p>
+                </div>
+                <div>
+                    <div class="screenshot-thumb"><img src="assets/imgs/forum.PNG" alt="Forum"></div>
+                    <p class="screenshot-label">Forum communautaire</p>
+                </div>
+                <div>
+                    <div class="screenshot-thumb"><img src="assets/imgs/forum2.PNG" alt="Forum discussion"></div>
+                    <p class="screenshot-label">Fil de discussion</p>
+                </div>
+                <div>
+                    <div class="screenshot-thumb"><img src="assets/imgs/forum3.PNG" alt="Forum détail"></div>
+                    <p class="screenshot-label">Détail d'un message</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FONCTIONNALITÉS -->
+<section class="section">
+    <div class="container">
+        <div class="fade-up">
+            <div class="section-label">Ce que fait l'application</div>
+            <h2 class="section-title">Fonctionnalités</h2>
+            <p class="section-sub">Une plateforme complète de gestion et lecture de livres numériques.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card fade-up">
+                <div class="feature-icon">📖</div>
+                <h3>Lecteur ePub</h3>
+                <p>Lecture directement dans le navigateur des fichiers ePub uploadés par les utilisateurs.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon">✏️</div>
+                <h3>Métadonnées</h3>
+                <p>Édition des informations des livres : titre, auteur, genres, éditeur et couverture.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon">👤</div>
+                <h3>Gestion utilisateurs</h3>
+                <p>Inscription, connexion, profils et gestion des droits d'accès selon le rôle.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon">💬</div>
+                <h3>Forum communautaire</h3>
+                <p>Espace social pour discuter des livres, partager des avis et interagir avec les autres lecteurs.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon">📚</div>
+                <h3>Catalogue</h3>
+                <p>Ajout, recherche et organisation des livres par genre, auteur ou éditeur.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon">🔐</div>
+                <h3>Authentification</h3>
+                <p>Système de connexion sécurisé avec gestion des sessions PHP.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STACK -->
+<section class="section section-warm">
+    <div class="container">
+        <div class="fade-up">
+            <div class="section-label">Stack technique</div>
+            <h2 class="section-title">Technologies utilisées</h2>
+        </div>
+        <div class="stack-grid">
+            <div class="stack-card fade-up"><span class="stack-emoji"></span><div class="stack-name">PHP</div><div class="stack-role">Backend, sessions et logique métier</div></div>
+            <div class="stack-card fade-up"><span class="stack-emoji"></span><div class="stack-name">HTML / CSS</div><div class="stack-role">Structure et mise en forme de l'interface</div></div>
+            <div class="stack-card fade-up"><span class="stack-emoji"></span><div class="stack-name">JavaScript</div><div class="stack-role">Interactions dynamiques et lecteur ePub</div></div>
+            <div class="stack-card fade-up"><span class="stack-emoji"></span><div class="stack-name">MySQL</div><div class="stack-role">Stockage des utilisateurs, livres et métadonnées</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="page-footer">
+    <p>Projet réalisé par <strong style="color:rgba(255,255,255,0.5)">Timothée Bizière-Maco</strong> — BTS SIO SLAM, Lycée Saint-Rémi, Amiens 2024</p>
+    <p style="margin-top:8px"><a href="index.html">← Retour au portfolio</a></p>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.fade-up').forEach((el, i) => {
+    el.style.transitionDelay = (i % 4) * 0.08 + 's';
+    observer.observe(el);
+});
+</script>
+</body>
+</html>

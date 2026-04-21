@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlanningAnalyser — Projet Licence Pro</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy:      #0f2d5e;
+            --navy-mid:  #1a4480;
+            --blue:      #3b6bdf;
+            --blue-soft: #e8f0ff;
+            --accent:    #5b8dee;
+            --white:     #ffffff;
+            --grey-50:   #f7f9fc;
+            --grey-100:  #eef2f8;
+            --grey-400:  #8fa3c0;
+            --grey-700:  #3d5278;
+            --dark:      #0d1f3c;
+            --font-d: 'Syne', sans-serif;
+            --font-b: 'DM Sans', sans-serif;
+            --radius: 14px;
+            --radius-lg: 22px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-b);
+            background: var(--grey-50);
+            color: var(--dark);
+            overflow-x: hidden;
+        }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 48px; height: 62px;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(59,107,223,0.1);
+        }
+        .navbar-brand {
+            font-family: var(--font-d); font-weight: 800; font-size: 1.05rem;
+            color: var(--navy); text-decoration: none;
+        }
+        .navbar-brand span { color: var(--blue); }
+        .navbar-back {
+            display: inline-flex; align-items: center; gap: 7px;
+            font-size: .84rem; font-weight: 500; color: var(--grey-700);
+            text-decoration: none; transition: color .2s;
+        }
+        .navbar-back:hover { color: var(--blue); }
+
+        /* ── HERO ── */
+        .hero {
+            min-height: 100vh;
+            background: linear-gradient(135deg, var(--dark) 0%, var(--navy) 50%, #1e3a6e 100%);
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; padding: 100px 24px 80px;
+            position: relative; overflow: hidden;
+        }
+        .hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 20% 40%, rgba(59,107,223,0.25) 0%, transparent 70%),
+                radial-gradient(ellipse 50% 60% at 80% 60%, rgba(91,141,238,0.2) 0%, transparent 70%);
+        }
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 50px; padding: 6px 16px; margin-bottom: 28px;
+            font-size: .78rem; font-weight: 500; color: rgba(255,255,255,0.7);
+            letter-spacing: .08em; text-transform: uppercase;
+        }
+        .hero-badge-dot {
+            width: 6px; height: 6px; border-radius: 50%; background: #5b8dee;
+            animation: blink 2s infinite;
+        }
+        @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+        .hero h1 {
+            font-family: var(--font-d); font-weight: 800;
+            font-size: clamp(2.8rem, 6vw, 4.5rem);
+            line-height: 1.05; letter-spacing: -.03em;
+            color: var(--white); margin-bottom: 20px; position: relative;
+        }
+        .hero h1 span { color: var(--accent); }
+        .hero-sub {
+            font-size: 1.1rem; color: rgba(255,255,255,0.55);
+            max-width: 520px; margin: 0 auto 36px; line-height: 1.65; font-weight: 300;
+        }
+        .hero-tags {
+            display: flex; flex-wrap: wrap; gap: 10px;
+            justify-content: center; position: relative;
+        }
+        .tag {
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px; padding: 6px 14px;
+            font-size: .78rem; font-weight: 500; color: rgba(255,255,255,0.75);
+        }
+        .hero-scroll {
+            position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
+            color: rgba(255,255,255,0.3); font-size: .72rem; letter-spacing: .1em;
+            text-transform: uppercase;
+        }
+        .scroll-line {
+            width: 1px; height: 40px;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.3), transparent);
+            animation: scrollDown 2s ease infinite;
+        }
+        @keyframes scrollDown { 0%{transform:scaleY(0);transform-origin:top} 50%{transform:scaleY(1);transform-origin:top} 51%{transform-origin:bottom} 100%{transform:scaleY(0);transform-origin:bottom} }
+
+        /* ── SECTIONS ── */
+        .section { padding: 96px 24px; }
+        .section-alt { background: var(--white); }
+        .container { max-width: 1060px; margin: 0 auto; }
+
+        .section-label {
+            font-size: .72rem; font-weight: 600; letter-spacing: .12em;
+            text-transform: uppercase; color: var(--blue); margin-bottom: 12px;
+        }
+        .section-title {
+            font-family: var(--font-d); font-weight: 800;
+            font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+            letter-spacing: -.03em; color: var(--dark); margin-bottom: 16px;
+            line-height: 1.1;
+        }
+        .section-sub {
+            color: var(--grey-400); font-size: 1rem; line-height: 1.65;
+            max-width: 560px; font-weight: 300;
+        }
+
+        /* ── CONTEXTE ── */
+        .contexte-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+            align-items: center; margin-top: 56px;
+        }
+        .contexte-text p {
+            color: var(--grey-700); line-height: 1.75; font-size: .97rem;
+            margin-bottom: 16px; font-weight: 300;
+        }
+        .contexte-text p strong { color: var(--dark); font-weight: 600; }
+        .contexte-card {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+            border-radius: var(--radius-lg); padding: 36px; color: white;
+        }
+        .contexte-card h3 {
+            font-family: var(--font-d); font-weight: 800; font-size: 1.1rem;
+            margin-bottom: 20px; color: white;
+        }
+        .stat-row {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+        }
+        .stat-box {
+            background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 10px; padding: 16px;
+        }
+        .stat-box .val {
+            font-family: var(--font-d); font-weight: 800; font-size: 1.8rem;
+            color: white; letter-spacing: -.03em;
+        }
+        .stat-box .lbl { font-size: .72rem; color: rgba(255,255,255,0.5); margin-top: 4px; }
+
+        /* ── SCREENSHOTS ── */
+        .screenshots { margin-top: 56px; }
+        .screenshot-main {
+            border-radius: var(--radius-lg); overflow: hidden;
+            box-shadow: 0 24px 80px rgba(15,45,94,0.2);
+            margin-bottom: 20px; border: 1px solid var(--grey-100);
+        }
+        .screenshot-main img { width: 100%; display: block; }
+        .screenshot-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+        }
+        .screenshot-thumb {
+            border-radius: var(--radius); overflow: hidden;
+            box-shadow: 0 8px 30px rgba(15,45,94,0.12);
+            border: 1px solid var(--grey-100);
+            transition: transform .3s, box-shadow .3s;
+        }
+        .screenshot-thumb:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 50px rgba(15,45,94,0.18);
+        }
+        .screenshot-thumb img { width: 100%; display: block; }
+        .screenshot-label {
+            font-size: .74rem; font-weight: 600; color: var(--grey-400);
+            text-align: center; margin-top: 8px; letter-spacing: .06em;
+            text-transform: uppercase;
+        }
+
+        /* ── FONCTIONNALITÉS ── */
+        .features-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 20px; margin-top: 56px;
+        }
+        .feature-card {
+            background: var(--white); border: 1px solid var(--grey-100);
+            border-radius: var(--radius-lg); padding: 28px;
+            transition: transform .3s, box-shadow .3s, border-color .3s;
+        }
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 60px rgba(59,107,223,0.12);
+            border-color: rgba(59,107,223,0.2);
+        }
+        .feature-icon {
+            width: 44px; height: 44px; border-radius: 12px;
+            background: var(--blue-soft); display: flex; align-items: center;
+            justify-content: center; font-size: 1.2rem; margin-bottom: 16px;
+        }
+        .feature-card h3 {
+            font-family: var(--font-d); font-weight: 700; font-size: .95rem;
+            color: var(--dark); margin-bottom: 10px;
+        }
+        .feature-card p {
+            font-size: .84rem; color: var(--grey-400); line-height: 1.65; font-weight: 300;
+        }
+
+        /* ── ALGO ── */
+        .algo-wrap {
+            background: var(--white); border: 1px solid var(--grey-100);
+            border-radius: var(--radius-lg); padding: 48px; margin-top: 56px;
+        }
+        .algo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+        .algo-visual {
+            background: var(--grey-50); border: 1px solid var(--grey-100);
+            border-radius: var(--radius); padding: 28px;
+        }
+        .algo-table { width: 100%; border-collapse: collapse; font-size: .8rem; }
+        .algo-table th {
+            background: var(--navy); color: white; padding: 8px 12px;
+            font-weight: 600; font-size: .72rem; letter-spacing: .06em;
+            text-transform: uppercase;
+        }
+        .algo-table td {
+            padding: 8px 12px; border-bottom: 1px solid var(--grey-100);
+            font-size: .8rem;
+        }
+        .merged-cell {
+            background: linear-gradient(135deg, rgba(59,107,223,0.08), rgba(91,141,238,0.08));
+            border: 2px solid rgba(59,107,223,0.3) !important;
+            color: var(--blue); font-weight: 600; text-align: center;
+        }
+        .algo-arrow {
+            display: flex; align-items: center; justify-content: center;
+            gap: 20px; margin: 20px 0; font-size: .85rem;
+        }
+        .algo-box {
+            padding: 12px 20px; border-radius: 10px; font-weight: 600;
+            font-size: .82rem; text-align: center;
+        }
+        .box-bad  { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+        .box-good { background: var(--blue-soft); color: var(--blue); border: 1px solid rgba(59,107,223,0.2); }
+        .arrow-icon { font-size: 1.2rem; color: var(--grey-400); }
+
+        .algo-text h3 {
+            font-family: var(--font-d); font-weight: 800; font-size: 1.3rem;
+            color: var(--dark); margin-bottom: 16px;
+        }
+        .algo-text p { font-size: .92rem; color: var(--grey-700); line-height: 1.75; margin-bottom: 14px; font-weight: 300; }
+        .algo-step {
+            display: flex; gap: 12px; margin-bottom: 14px; align-items: flex-start;
+        }
+        .step-num {
+            width: 24px; height: 24px; border-radius: 50%; background: var(--blue);
+            color: white; font-size: .72rem; font-weight: 700;
+            display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .step-text { font-size: .88rem; color: var(--grey-700); line-height: 1.6; font-weight: 300; }
+        .step-text strong { color: var(--dark); font-weight: 600; }
+
+        /* ── STACK ── */
+        .stack-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr);
+            gap: 16px; margin-top: 56px;
+        }
+        .stack-card {
+            background: var(--white); border: 1px solid var(--grey-100);
+            border-radius: var(--radius); padding: 24px; text-align: center;
+            transition: transform .3s, box-shadow .3s;
+        }
+        .stack-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(59,107,223,0.1); }
+        .stack-emoji { font-size: 2rem; margin-bottom: 12px; display: block; }
+        .stack-name { font-family: var(--font-d); font-weight: 700; font-size: .9rem; color: var(--dark); margin-bottom: 6px; }
+        .stack-role { font-size: .75rem; color: var(--grey-400); line-height: 1.5; font-weight: 300; }
+
+        /* ── FOOTER ── */
+        .page-footer {
+            background: var(--dark); padding: 48px 24px; text-align: center;
+        }
+        .page-footer p { color: rgba(255,255,255,0.35); font-size: .84rem; }
+        .page-footer a {
+            color: var(--accent); text-decoration: none; font-weight: 500;
+            transition: color .2s;
+        }
+        .page-footer a:hover { color: white; }
+
+        /* ── ANIMATIONS ── */
+        .fade-up {
+            opacity: 0; transform: translateY(24px);
+            transition: opacity .7s ease, transform .7s ease;
+        }
+        .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .navbar { padding: 0 20px; }
+            .contexte-grid, .algo-grid, .features-grid { grid-template-columns: 1fr; }
+            .stack-grid { grid-template-columns: repeat(2, 1fr); }
+            .screenshot-grid { grid-template-columns: 1fr; }
+            .stat-row { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <a href="index.html" class="navbar-brand">Planning<span>Analyser</span></a>
+    <a href="index.html" class="navbar-back">← Retour au portfolio</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div style="position:relative;z-index:1">
+        <div class="hero-badge">
+            <div class="hero-badge-dot"></div>
+            Projet Licence Pro — 2025/2026
+        </div>
+        <h1>Planning<span>Analyser</span></h1>
+        <p class="hero-sub">Application web d'analyse automatique des emplois du temps universitaires — développée dans le cadre d'un projet tutoré pour Madame Sandrine Lanquetin.</p>
+        <div class="hero-tags">
+            <span class="tag">JavaScript</span>
+            <span class="tag">PHP</span>
+            <span class="tag">MySQL</span>
+            <span class="tag">SheetJS</span>
+            <span class="tag">WAMP</span>
+        </div>
+    </div>
+    <div class="hero-scroll">
+        <div class="scroll-line"></div>
+        Scroll
+    </div>
+</section>
+
+<!-- CONTEXTE -->
+<section class="section">
+    <div class="container">
+        <div class="fade-up">
+            <div class="section-label">Contexte du projet</div>
+            <h2 class="section-title">Un besoin réel,<br>une solution concrète</h2>
+            <p class="section-sub">Mission confiée par ma tutrice de projet dans le cadre de ma Licence Professionnelle à L'université de Bourgogne.</p>
+        </div>
+        <div class="contexte-grid">
+            <div class="contexte-text fade-up">
+                <p>Dans le cadre de mon projet tutoré, <strong>Madame Sandrine Lanquetin</strong>, enseignante coordinatrice pédagogique, m'a confié la mission de développer un outil d'analyse des emplois du temps universitaires.</p>
+                <p>Chaque semestre, elle gère plusieurs fichiers Excel représentant les plannings de ses intervenants. Extraire les volumes horaires se faisait <strong>manuellement</strong> — une tâche longue, fastidieuse et source d'erreurs.</p>
+                <p>L'objectif : créer une application web permettant d'importer ces fichiers et d'obtenir automatiquement des statistiques détaillées par <strong>intervenant</strong>, par <strong>matière</strong> et par <strong>groupe d'étudiants</strong>.</p>
+            </div>
+            <div class="contexte-card fade-up">
+                <h3>📊 Résultats sur fichiers réels</h3>
+                <div class="stat-row">
+                    <div class="stat-box">
+                        <div class="val">329h</div>
+                        <div class="lbl">Analysées — Semestre 1</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="val">294h</div>
+                        <div class="lbl">Analysées — Semestre 2</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="val">4</div>
+                        <div class="lbl">Fichiers Excel testés</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="val">100%</div>
+                        <div class="lbl">Parsing côté client</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SCREENSHOTS -->
+<section class="section section-alt">
+    <div class="container">
+        <div class="fade-up">
+            <div class="section-label">Aperçu de l'application</div>
+            <h2 class="section-title">L'interface en images</h2>
+        </div>
+        <div class="screenshots fade-up">
+            <div class="screenshot-main">
+                <img src="assets/imgs/planning-accueil.png" alt="Page d'accueil PlanningAnalyser">
+            </div>
+            <p class="screenshot-label">Page d'accueil</p>
+            <div class="screenshot-grid" style="margin-top:20px">
+                <div>
+                    <div class="screenshot-thumb">
+                        <img src="assets/imgs/planning-analyse.png" alt="Dashboard analyse">
+                    </div>
+                    <p class="screenshot-label">Dashboard d'analyse — vues filtrables par groupe</p>
+                </div>
+                <div>
+                    <div class="screenshot-thumb">
+                        <img src="assets/imgs/planning-detail.png" alt="Fiche intervenant">
+                    </div>
+                    <p class="screenshot-label">Fiche détaillée par intervenant</p>
+                </div>
+                <div>
+                    <div class="screenshot-thumb">
+                        <img src="assets/imgs/planning-fonctionnalites.png" alt="Fonctionnalités">
+                    </div>
+                    <p class="screenshot-label">Fonctionnalités principales</p>
+                </div>
+                <div>
+                    <div class="screenshot-thumb">
+                        <img src="assets/imgs/planning-exceptions.png" alt="Gestion exceptions">
+                    </div>
+                    <p class="screenshot-label">Gestion des exceptions (CRUD PHP/MySQL)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FONCTIONNALITÉS -->
+<section class="section">
+    <div class="container">
+        <div class="fade-up">
+            <div class="section-label">Ce que fait l'application</div>
+            <h2 class="section-title">Fonctionnalités</h2>
+            <p class="section-sub">Trois vues complémentaires, des filtres dynamiques et une fiche détaillée par intervenant.</p>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card fade-up">
+                <div class="feature-icon">📁</div>
+                <h3>Import Excel</h3>
+                <p>Glissez-déposez votre fichier .xlsx. Le parser détecte automatiquement les feuilles semaines, les groupes d'étudiants et extrait toutes les séances.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon">📊</div>
+                <h3>3 vues d'analyse</h3>
+                <p>Group by intervenant, group by matière, et la combinaison intervenant × matière — toutes filtrables par sous-groupe d'étudiants en temps réel.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon">👤</div>
+                <h3>Fiche intervenant</h3>
+                <p>Répartition des heures par matière et par groupe sous forme de barres proportionnelles, avec les statistiques globales en en-tête.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon">🎓</div>
+                <h3>Filtres par groupe</h3>
+                <p>Les sous-groupes sont détectés dynamiquement depuis les en-têtes du fichier Excel. Aucun codage en dur — l'outil s'adapte à n'importe quelle structure.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon">⚙️</div>
+                <h3>Gestion des exceptions</h3>
+                <p>CRUD PHP/MySQL pour gérer la liste des valeurs à ignorer lors du parsing : jours fériés, pauses, annotations diverses.</p>
+            </div>
+            <div class="feature-card fade-up">
+                <div class="feature-icon">🔒</div>
+                <h3>Données locales</h3>
+                <p>Tout le parsing est réalisé côté navigateur avec SheetJS. Le fichier Excel ne quitte jamais le poste de l'utilisateur.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ALGO FUSIONS -->
+<section class="section section-alt">
+    <div class="container">
+        <div class="fade-up">
+            <div class="section-label">Défi technique principal</div>
+            <h2 class="section-title">L'algorithme des fusions</h2>
+            <p class="section-sub">Le problème central du projet — et sa solution.</p>
+        </div>
+        <div class="algo-wrap fade-up">
+            <div class="algo-grid">
+                <div class="algo-visual">
+                    <p style="font-size:.75rem;font-weight:600;color:var(--grey-400);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px">Cellule fusionnée Excel</p>
+                    <table class="algo-table">
+                        <thead>
+                            <tr>
+                                <th>Horaire</th>
+                                <th>TP1</th>
+                                <th>TP2</th>
+                                <th>TP3</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>8h00</td>
+                                <td colspan="3" class="merged-cell">CM Réseaux OT — fusionné sur 3 colonnes</td>
+                            </tr>
+                            <tr>
+                                <td>9h00</td>
+                                <td>TD Algo RR</td>
+                                <td>TD Algo RR</td>
+                                <td>—</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="algo-arrow">
+                        <div class="algo-box box-bad">❌ Sans algo : 3 séances</div>
+                        <div class="arrow-icon">→</div>
+                        <div class="algo-box box-good">✓ Avec algo : 1 séance</div>
+                    </div>
+                </div>
+                <div class="algo-text">
+                    <h3>Pourquoi c'est un problème ?</h3>
+                    <p>Dans Excel, un cours magistral pour toute la promo fusionne plusieurs colonnes. Sans traitement spécifique, lire colonne par colonne multiplie le comptage par le nombre de groupes.</p>
+                    <p>La solution repose sur la propriété <code style="background:var(--blue-soft);padding:2px 7px;border-radius:5px;font-size:.82rem;color:var(--blue)">!merges</code> de SheetJS, qui expose les métadonnées de fusion.</p>
+                    <div class="algo-step">
+                        <div class="step-num">1</div>
+                        <div class="step-text"><strong>Passe 1 — fusions</strong> : chaque fusion = 1 séance. On marque toutes les cellules couvertes comme traitées.</div>
+                    </div>
+                    <div class="algo-step">
+                        <div class="step-num">2</div>
+                        <div class="step-text"><strong>Passe 2 — cellules normales</strong> : on saute les cellules déjà traitées et on enregistre les séances individuelles.</div>
+                    </div>
+                    <div class="algo-step">
+                        <div class="step-num">3</div>
+                        <div class="step-text"><strong>Groupes couverts</strong> : les colonnes de la fusion sont croisées avec la map colonne → sous-groupe pour identifier les groupes concernés.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STACK -->
+<section class="section">
+    <div class="container">
+        <div class="fade-up">
+            <div class="section-label">Stack technique</div>
+            <h2 class="section-title">Technologies utilisées</h2>
+        </div>
+        <div class="stack-grid">
+            <div class="stack-card fade-up">
+                <span class="stack-emoji">📊</span>
+                <div class="stack-name">SheetJS</div>
+                <div class="stack-role">Parsing des fichiers .xlsx directement dans le navigateur</div>
+            </div>
+            <div class="stack-card fade-up">
+                <span class="stack-emoji">⚡</span>
+                <div class="stack-name">JavaScript ES6</div>
+                <div class="stack-role">Parsing, calculs, affichage dynamique des résultats</div>
+            </div>
+            <div class="stack-card fade-up">
+                <span class="stack-emoji">🐘</span>
+                <div class="stack-name">PHP 8</div>
+                <div class="stack-role">Pages dynamiques et CRUD des exceptions</div>
+            </div>
+            <div class="stack-card fade-up">
+                <span class="stack-emoji">🗄️</span>
+                <div class="stack-name">MySQL</div>
+                <div class="stack-role">Stockage persistant des exceptions via WAMP</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="page-footer">
+    <p>Projet réalisé par <strong style="color:rgba(255,255,255,0.6)">Timothée Bizière-Maco</strong> — Licence Pro Université Bourgogne 2025/2026</p>
+    <p style="margin-top:8px"><a href="index.html">← Retour au portfolio</a></p>
+</footer>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.fade-up').forEach((el, i) => {
+    el.style.transitionDelay = (i % 4) * 0.08 + 's';
+    observer.observe(el);
+});
+</script>
+</body>
+</html>
